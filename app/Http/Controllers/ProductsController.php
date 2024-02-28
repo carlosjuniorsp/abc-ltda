@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreClientFormRequest;
 use App\Models\Products;
-use Illuminate\Http\Request;
 
 class ProductsController extends Controller
 {
@@ -20,7 +18,6 @@ class ProductsController extends Controller
         $this->model = $products;
     }
 
-
     /**
      * @OA\get(
      *     path="/products",
@@ -30,7 +27,6 @@ class ProductsController extends Controller
      *     description="Display all products",
      *     @OA\Response(response="200", description="Products show successfully"),
      *     @OA\Response(response="400", description="Invalid request")
-     *     @OA\Response(response="500", description="Internal server error")
      * )
      */
     public function index()
