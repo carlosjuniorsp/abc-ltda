@@ -1,10 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\ProductsController;
 use Illuminate\Support\Facades\Route;
 
-
-use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,4 +14,9 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/test', [UserController::class, 'test']);
+
+
+/**
+ * Products Router
+ */
+Route::get('/products', [ProductsController::class, 'index'])->name('index');

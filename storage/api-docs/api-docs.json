@@ -6,44 +6,24 @@
     },
     "servers": [
         {
-            "url": "http://localhost/api"
+            "url": "http://127.0.0.1:8000/api"
         }
     ],
     "paths": {
-        "/api/test": {
+        "/products": {
             "get": {
                 "tags": [
-                    "Test"
+                    "#1 - Products"
                 ],
-                "summary": "Get all users",
-                "description": "Get all users",
-                "operationId": "b4d1acc299ff9d144fb0ce95eaf91605",
-                "parameters": [
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "description": "name",
-                        "required": false
-                    },
-                    {
-                        "name": "email",
-                        "in": "query",
-                        "description": "email",
-                        "required": false
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Page Number",
-                        "required": false
-                    }
-                ],
+                "summary": "Display all products",
+                "description": "Display all products",
+                "operationId": "display_products",
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {}
-                        }
+                    "201": {
+                        "description": "Products registered successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
                     }
                 }
             }
