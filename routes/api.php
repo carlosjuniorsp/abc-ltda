@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\SalesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,3 +21,8 @@ use Illuminate\Support\Facades\Route;
  * Products Router
  */
 Route::get('/products', [ProductsController::class, 'index'])->name('index');
+
+/**
+ * Sales's Router
+ */
+Route::post('/sales', [SalesController::class, 'store'])->name('store');

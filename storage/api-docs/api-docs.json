@@ -21,6 +21,78 @@
                 "responses": {
                     "200": {
                         "description": "Products show successfully"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/sales": {
+            "post": {
+                "tags": [
+                    "#1 - Sales"
+                ],
+                "summary": "Register a new sales",
+                "description": "Register a new sales",
+                "operationId": "new_sales",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "amount",
+                                    "products"
+                                ],
+                                "properties": {
+                                    "amount": {
+                                        "type": "integer"
+                                    },
+                                    "products": {
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Register Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": [
+                                    {
+                                        "products": {
+                                            "product_id": 1,
+                                            "nome": "Celular 1",
+                                            "price": 1.8,
+                                            "amount": 1
+                                        },
+                                        "0": {
+                                            "product_id": 2,
+                                            "nome": "Celular 2",
+                                            "price": 3.2,
+                                            "amount": 2
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
                     }
                 }
             }

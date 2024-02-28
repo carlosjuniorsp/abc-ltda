@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tb_products', function (Blueprint $table) {
+        Schema::create('tb_sales', function (Blueprint $table) {
             $table->id();
-            $table->string('name',100);
-            $table->decimal('price', 4,2);
-            $table->string('description');
+            $table->integer('amount');
+            $table->string('products');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::drop('tb_products');
+        Schema::drop('tb_sales');
     }
 };
