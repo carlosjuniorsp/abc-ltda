@@ -19,11 +19,8 @@
                 "description": "Display all products",
                 "operationId": "display_products",
                 "responses": {
-                    "201": {
-                        "description": "Products registered successfully"
-                    },
-                    "422": {
-                        "description": "Validation errors"
+                    "200": {
+                        "description": "Products show successfully"
                     }
                 }
             }
