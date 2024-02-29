@@ -12,7 +12,8 @@ class Sales extends Model
 
     protected $fillable = [
         'id',
-        'product_id',
+        'tb_client_id',
+        'tb_product_id',
         'price',
         'quantity',
         'created_at'

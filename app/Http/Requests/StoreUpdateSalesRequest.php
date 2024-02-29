@@ -22,8 +22,8 @@ class StoreUpdateSalesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_id' => 'required',
-            'product_id' => 'required',
+            'tb_client_id' => 'required',
+            'tb_product_id' => 'required',
             'price' => 'required',
             'quantity' => 'required',
         ];

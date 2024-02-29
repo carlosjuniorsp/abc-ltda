@@ -33,9 +33,9 @@ class SalesController extends Controller
      *            mediaType="multipart/form-data",
      *            @OA\Schema(
      *               type="object",
-     *               required={"client_id", "product_id","price","quantity"},
-     *               @OA\Property(property="client_id", type="integer"),
-     *               @OA\Property(property="product_id", type="integer"),
+     *               required={"tb_client_id", "tb_product_id","price","quantity"},
+     *               @OA\Property(property="tb_client_id", type="integer"),
+     *               @OA\Property(property="tb_product_id", type="integer"),
      *               @OA\Property(property="price", type="decimal"),
      *               @OA\Property(property="quantity", type="integer"),
      *            ),
@@ -46,8 +46,8 @@ class SalesController extends Controller
      *          description="Register Successfully",
      *          @OA\JsonContent(
      *              example={           
-     *                    "client_id": 1,
-     *                    "product_id": 2,
+     *                    "tb_client_id": 1,
+     *                    "tb_product_id": 2,
      *                    "price": 8.50,
      *                    "quantity": 10                            
      *              }
@@ -62,7 +62,8 @@ class SalesController extends Controller
     public function store(StoreUpdateSalesRequest $request)
     {
         try {
-            $sale = $this->model->create($request->all());
+            $data = $request->validated();
+            $sale = Sales::create($data);
             return new SalesResource($sale);
         } catch (\Exception $e) {
             return [
