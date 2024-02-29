@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tb_client', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->unique('email');
+            $table->string('email', 130);
             $table->softDeletes();
             $table->timestamps();
         });

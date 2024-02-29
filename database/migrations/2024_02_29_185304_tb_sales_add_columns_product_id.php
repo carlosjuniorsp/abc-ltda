@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tb_sales', function (Blueprint $table) {
-            $table->id();
-            $table->decimal('price', 4, 2);
-            $table->integer('quantity');
-            $table->softDeletes();
-            $table->timestamps();
+        Schema::table('tb_sales', function (Blueprint $table) {
+            $table->foreignId('tb_product_id')->after('tb_client_id')->constrained('tb_products');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tb_sales');
+        Schema::create('tb_sales', function (Blueprint $table) {
+            $table->dropColumn('tb_product_id');
+        });
     }
 };

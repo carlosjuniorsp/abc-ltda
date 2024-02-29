@@ -22,6 +22,6 @@ class Products extends Model
 
     public function sales()
     {
-        return $this->hasOne(Sales::class, 'product_id');
+        return $this->hasOne(Sales::class, 'tb_product_id');
     }
 }

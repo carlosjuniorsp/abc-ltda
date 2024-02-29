@@ -11,6 +11,6 @@ class Client extends Model
 
     public function sales()
     {
-        return $this->hasOne(Sales::class, 'client_id');
+        return $this->hasOne(Sales::class, 'tb_client_id');
     }
 }
