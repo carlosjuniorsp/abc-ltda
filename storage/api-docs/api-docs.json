@@ -57,13 +57,23 @@
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
+                                    "client_id",
                                     "product_id",
-                                    "amount",
+                                    "price",
                                     "quantity"
                                 ],
                                 "properties": {
+                                    "client_id": {
+                                        "type": "integer"
+                                    },
                                     "product_id": {
-                                        "type": "string"
+                                        "type": "integer"
+                                    },
+                                    "price": {
+                                        "type": "decimal"
+                                    },
+                                    "quantity": {
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
@@ -75,28 +85,22 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Register Successfully",
                         "content": {
                             "application/json": {
                                 "schema": {},
                                 "example": {
-                                    "product_id": [
-                                        1,
-                                        2
-                                    ]
+                                    "client_id": 1,
+                                    "product_id": 2,
+                                    "price": 8.5,
+                                    "quantity": 10
                                 }
                             }
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "Resource Not Found"
                     }
                 }
             }

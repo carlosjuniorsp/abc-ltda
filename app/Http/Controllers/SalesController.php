@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUpdateSalesRequest;
+use App\Http\Resources\SalesResource;
 use App\Models\Sales;
 use App\Models\Products;
-use Illuminate\Http\Request;
 
 class SalesController extends Controller
 {
@@ -32,17 +33,23 @@ class SalesController extends Controller
      *            mediaType="multipart/form-data",
      *            @OA\Schema(
      *               type="object",
-     *               required={"product_id", "amount","quantity"},
-     *               @OA\Property(property="product_id", type="string"),
+     *               required={"client_id", "product_id","price","quantity"},
+     *               @OA\Property(property="client_id", type="integer"),
+     *               @OA\Property(property="product_id", type="integer"),
+     *               @OA\Property(property="price", type="decimal"),
+     *               @OA\Property(property="quantity", type="integer"),
      *            ),
      *        ),
      *    ),
      *      @OA\Response(
-     *          response=200,
+     *          response=201,
      *          description="Register Successfully",
      *          @OA\JsonContent(
      *              example={           
-     *                     "product_id": {1,2},                            
+     *                    "client_id": 1,
+     *                    "product_id": 2,
+     *                    "price": 8.50,
+     *                    "quantity": 10                            
      *              }
      *          )
      *       ),
@@ -50,24 +57,13 @@ class SalesController extends Controller
      *          response=422,
      *          description="Unprocessable Entity",
      *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
      * )
      */
-    public function store(Request $request)
+    public function store(StoreUpdateSalesRequest $request)
     {
         try {
-            $products = new Products();
-            foreach ($request['product_id'] as $product_id) {
-                $products = $products->find($product_id);
-                if (empty($products)) {
-                    return [
-                        "message" => "O produto (" . $product_id . ") Não existe, portanto o pedido não pode ser feito!",
-                    ];
-                }
-                $sale = $this->model->create($request->all());
-                return response()->json($sale);
-            }
+            $sale = $this->model->create($request->all());
+            return new SalesResource($sale);
         } catch (\Exception $e) {
             return [
                 'message' => $e->getMessage()
@@ -89,17 +85,13 @@ class SalesController extends Controller
     public function index()
     {
         try {
-            $sales = $this->model->all();
+            $sales = $this->model::paginate();
             if (count($sales) <= 0) {
                 return [
                     'message' => 'Nenhuma venda foi encontrado!',
                 ];
             }
-            $prod = "";
-            for ($i = 0; $i < count($sales); $i++) {
-                $prod = $this->sales_structure($sales[$i]);
-            }
-            return $prod;
+            return SalesResource::collection($sales);
         } catch (\Exception $e) {
             return [
                 'message' => $e->getMessage()

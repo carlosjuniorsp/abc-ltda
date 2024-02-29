@@ -19,4 +19,9 @@ class Products extends Model
     protected $hidden = [
         'updated_at'
     ];
+
+    public function sales()
+    {
+        return $this->hasOne(Sales::class, 'product_id');
+    }
 }

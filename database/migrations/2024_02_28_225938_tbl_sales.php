@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tb_sales', function (Blueprint $table) {
-            $table->id();
-            $table->json('product_id');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('client_id');
+            $table->foreign('client_id')->references('id')->on('tb_client')->onDelete('cascade');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('tb_products')->onDelete('cascade');
+            $table->decimal('price', 4, 2);
+            $table->integer('quantity');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -24,8 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tb_sales', function (Blueprint $table) {
-            $table->dropSoftDeletes();
-        });
+        Schema::dropIfExists('tb_sales');
     }
 };

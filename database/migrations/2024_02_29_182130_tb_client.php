@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tb_products', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name',100);
-            $table->decimal('price', 4,2);
-            $table->string('description');
+        Schema::create('tb_client', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 100);
+            $table->unique('email');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tb_products');
+        Schema::dropIfExists('tb_client');
     }
 };
