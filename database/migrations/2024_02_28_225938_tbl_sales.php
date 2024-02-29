@@ -13,10 +13,7 @@ return new class extends Migration
     {
         Schema::create('tb_sales', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('tb_products');
-            $table->decimal('price', 4, 2);
-            $table->integer('amount');
+            $table->json('product_id');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,6 +24,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::drop('tb_sales');
+        Schema::table('tb_sales', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 };

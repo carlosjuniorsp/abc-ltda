@@ -13,12 +13,15 @@ class Sales extends Model
     protected $fillable = [
         'id',
         'product_id',
-        'price',
-        'amount',
         'created_at'
     ];
 
     protected $hidden = [
-        'updated_at'
+        'updated_at',
+        'deleted_at'
+    ];
+
+    protected $casts = [
+        'product_id' => 'array'
     ];
 }

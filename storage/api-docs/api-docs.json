@@ -63,13 +63,7 @@
                                 ],
                                 "properties": {
                                     "product_id": {
-                                        "type": "integer"
-                                    },
-                                    "price": {
-                                        "type": "decimal"
-                                    },
-                                    "amount": {
-                                        "type": "integer"
+                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
@@ -86,13 +80,12 @@
                         "content": {
                             "application/json": {
                                 "schema": {},
-                                "example": [
-                                    {
-                                        "product_id": 1,
-                                        "price": 1.8,
-                                        "amount": 5
-                                    }
-                                ]
+                                "example": {
+                                    "product_id": [
+                                        1,
+                                        2
+                                    ]
+                                }
                             }
                         }
                     },

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sales;
-use App\Http\Requests\StoreSalesFormRequest;
+use App\Models\Products;
+use Illuminate\Http\Request;
 
 class SalesController extends Controller
 {
@@ -32,9 +33,7 @@ class SalesController extends Controller
      *            @OA\Schema(
      *               type="object",
      *               required={"product_id", "amount","quantity"},
-     *               @OA\Property(property="product_id", type="integer"),
-     *               @OA\Property(property="price", type="decimal"),
-     *               @OA\Property(property="amount", type="integer"),
+     *               @OA\Property(property="product_id", type="string"),
      *            ),
      *        ),
      *    ),
@@ -42,12 +41,8 @@ class SalesController extends Controller
      *          response=200,
      *          description="Register Successfully",
      *          @OA\JsonContent(
-     *              example={
-     *                  {
-     *                     "product_id": 1,
-     *                     "price": 1.800,
-     *                     "amount": 5                  
-     *                  }
+     *              example={           
+     *                     "product_id": {1,2},                            
      *              }
      *          )
      *       ),
@@ -59,12 +54,20 @@ class SalesController extends Controller
      *      @OA\Response(response=404, description="Resource Not Found"),
      * )
      */
-    public function store(StoreSalesFormRequest $request)
+    public function store(Request $request)
     {
         try {
-            $data = $request->all();
-            $sales = $this->model->create($data);
-            return response()->json($sales);
+            $products = new Products();
+            foreach ($request['product_id'] as $product_id) {
+                $products = $products->find($product_id);
+                if (empty($products)) {
+                    return [
+                        "message" => "O produto (" . $product_id . ") Não existe, portanto o pedido não pode ser feito!",
+                    ];
+                }
+                $sale = $this->model->create($request->all());
+                return response()->json($sale);
+            }
         } catch (\Exception $e) {
             return [
                 'message' => $e->getMessage()
@@ -92,7 +95,11 @@ class SalesController extends Controller
                     'message' => 'Nenhuma venda foi encontrado!',
                 ];
             }
-            return response()->json($sales);
+            $prod = "";
+            for ($i = 0; $i < count($sales); $i++) {
+                $prod = $this->sales_structure($sales[$i]);
+            }
+            return $prod;
         } catch (\Exception $e) {
             return [
                 'message' => $e->getMessage()
@@ -124,14 +131,8 @@ class SalesController extends Controller
     public function showSale($sale_id)
     {
         try {
-            $sales = $this->model::select('tb_sales')
-                ->select('tb_sales.id', 'product_id', 'tb_sales.price', 'tb_sales.amount', 'tb_sales.created_at')
-                ->join('tb_products', 'tb_products.id', '=', 'tb_sales.product_id')
-                ->where('tb_sales.id', '=', $sale_id)
-                ->orderBy('tb_sales.id')
-                ->get();
-
-            if (count($sales) <= 0) {
+            $sales = $this->model::find($sale_id);
+            if (!$sales) {
                 return [
                     'message' => 'Nenhuma venda encontrada com o id ' . $sale_id . ' informado!',
                 ];
@@ -145,28 +146,26 @@ class SalesController extends Controller
     }
 
     /**
-     * Set up the sales structure
-     * @param array $sales
+     * Assemble the order structure
+     * @param Sales $sales
      * @return array
      */
     private function sales_structure($sales)
     {
-        try {
-            foreach ($sales as $sale) {
-                return [
-                    'sales_id' => $sale->id,
-                    'product' => [
-                        'product_id' => $sale->product_id,
-                        'price' => $sale->price,
-                        'amount' => $sale->amount
-                    ],
-                    'total' => $sale->price * $sale->amount
-                ];
-            }
-        } catch (\Exception $e) {
-            return [
-                'message' => $e->getMessage()
+        $products = new Products();
+        $result = [];
+        foreach ($sales->product_id as $product_id) {
+            $products = $products->find($product_id);
+            $result[] = [
+                'name' => $products->name,
+                'price' => $products->price
             ];
         }
+
+        return
+            [
+                'sales_id' => $sales->id,
+                'product' => $result
+            ];
     }
 }
