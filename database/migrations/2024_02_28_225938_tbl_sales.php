@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('tb_sales', function (Blueprint $table) {
             $table->id();
             $table->integer('amount');
-            $table->string('products');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('tb_products');
+            $table->decimal('price',4,2);
+            $table->integer('quantity');
             $table->softDeletes();
             $table->timestamps();
         });
