@@ -19,7 +19,7 @@ class SalesController extends Controller
     {
         $this->model = $sales;
     }
-    
+
     /**
      * @OA\Post(
      * path="/sales",
@@ -33,9 +33,10 @@ class SalesController extends Controller
      *            mediaType="multipart/form-data",
      *            @OA\Schema(
      *               type="object",
-     *               required={"amount", "products"},
+     *               required={"product_id", "amount","quantity"},
+     *               @OA\Property(property="product_id", type="integer"),
+     *               @OA\Property(property="price", type="decimal"),
      *               @OA\Property(property="amount", type="integer"),
-     *               @OA\Property(property="products", type="text"),
      *            ),
      *        ),
      *    ),
@@ -45,19 +46,9 @@ class SalesController extends Controller
      *          @OA\JsonContent(
      *              example={
      *                  {
-     *                      "products": 
-     *                          {
-     *                            "product_id": 1,
-     *                            "nome": "Celular 1",
-     *                            "price": 1.800,
-     *                            "amount": 1                  
-     *                          },
-     *                          {
-     *                            "product_id": 2,
-     *                            "nome": "Celular 2",
-     *                            "price": 3.200,
-     *                            "amount": 2                  
-     *                          }
+     *                     "product_id": 1,
+     *                     "price": 1.800,
+     *                     "amount": 5                  
      *                  }
      *              }
      *          )

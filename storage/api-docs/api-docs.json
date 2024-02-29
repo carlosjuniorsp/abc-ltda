@@ -41,15 +41,19 @@
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
+                                    "product_id",
                                     "amount",
-                                    "products"
+                                    "quantity"
                                 ],
                                 "properties": {
-                                    "amount": {
+                                    "product_id": {
                                         "type": "integer"
                                     },
-                                    "products": {
-                                        "type": "text"
+                                    "price": {
+                                        "type": "decimal"
+                                    },
+                                    "amount": {
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
@@ -68,18 +72,9 @@
                                 "schema": {},
                                 "example": [
                                     {
-                                        "products": {
-                                            "product_id": 1,
-                                            "nome": "Celular 1",
-                                            "price": 1.8,
-                                            "amount": 1
-                                        },
-                                        "0": {
-                                            "product_id": 2,
-                                            "nome": "Celular 2",
-                                            "price": 3.2,
-                                            "amount": 2
-                                        }
+                                        "product_id": 1,
+                                        "price": 1.8,
+                                        "amount": 1
                                     }
                                 ]
                             }

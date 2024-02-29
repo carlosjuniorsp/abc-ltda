@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('tb_products');
-            $table->decimal('price',4,2);
+            $table->decimal('price', 4, 2);
             $table->integer('amount');
             $table->softDeletes();
             $table->timestamps();
