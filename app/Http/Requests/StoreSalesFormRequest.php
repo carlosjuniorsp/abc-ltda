@@ -28,8 +28,9 @@ class StoreSalesFormRequest extends FormRequest
                 }
             case 'POST': {
                     return [
+                        'product_id' => 'required',
+                        'price' => 'required',
                         'amount' => 'required',
-                        'product' => 'required',
                     ];
                 }
             case 'PUT':
