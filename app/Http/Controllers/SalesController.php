@@ -5,13 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Sales;
 use App\Http\Requests\StoreSalesFormRequest;
 
-setlocale(LC_MONETARY, 'pt_BR');
-
-
 class SalesController extends Controller
 {
     private $model;
-
     /**
      * Create a new controller instance.
      *
