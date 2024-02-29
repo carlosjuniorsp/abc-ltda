@@ -26,3 +26,5 @@ Route::get('/products', [ProductsController::class, 'index'])->name('index');
  * Sales's Router
  */
 Route::post('/sales', [SalesController::class, 'store'])->name('store');
+Route::get('/sales', [SalesController::class, 'index'])->name('index');
+Route::get('/sales/{id}', [SalesController::class, 'showSale'])->name('showSale');

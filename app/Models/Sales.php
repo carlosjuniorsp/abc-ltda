@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Sales extends Model
 {
     use SoftDeletes;
-    protected $table = 'tb_products';
+    protected $table = 'tb_sales';
 
     protected $fillable = [
         'id',
+        'product_id',
+        'price',
         'amount',
-        'products',
+        'created_at'
     ];
 
     protected $hidden = [

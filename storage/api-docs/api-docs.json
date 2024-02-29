@@ -29,9 +29,25 @@
             }
         },
         "/sales": {
+            "get": {
+                "tags": [
+                    "Show Sales"
+                ],
+                "summary": "Display all sales",
+                "description": "Display all sales",
+                "operationId": "display_sales",
+                "responses": {
+                    "200": {
+                        "description": "sales show successfully"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            },
             "post": {
                 "tags": [
-                    "#1 - Sales"
+                    "Store Sales"
                 ],
                 "summary": "Register a new sales",
                 "description": "Register a new sales",
@@ -74,12 +90,41 @@
                                     {
                                         "product_id": 1,
                                         "price": 1.8,
-                                        "amount": 1
+                                        "amount": 5
                                     }
                                 ]
                             }
                         }
                     },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/sales/{id}": {
+            "get": {
+                "tags": [
+                    "Show Sale"
+                ],
+                "summary": "Show one sale from id",
+                "description": "Show one sale from id",
+                "operationId": "sale_show",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Sale id",
+                        "required": true
+                    }
+                ],
+                "responses": {
                     "422": {
                         "description": "Unprocessable Entity"
                     },
