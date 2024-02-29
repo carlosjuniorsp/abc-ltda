@@ -13,17 +13,71 @@
         "/products": {
             "get": {
                 "tags": [
-                    "#1 - Products"
+                    "Show Products"
                 ],
                 "summary": "Display all products",
                 "description": "Display all products",
                 "operationId": "display_products",
                 "responses": {
                     "200": {
-                        "description": "Products show successfully"
+                        "description": "products show successfully"
                     },
                     "400": {
                         "description": "Invalid request"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Store Products"
+                ],
+                "summary": "Register a new products",
+                "description": "Register a new products",
+                "operationId": "new_products",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "price",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "text"
+                                    },
+                                    "description": {
+                                        "type": "text"
+                                    },
+                                    "price": {
+                                        "type": "decimal"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Register Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "name": "Celular 1",
+                                    "price": 2.3,
+                                    "description": "Lorem ipsum dolor sit amet"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
                     }
                 }
             }

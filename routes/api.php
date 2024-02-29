@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Route;
 /**
  * Products Router
  */
+Route::post('/products', [ProductsController::class, 'store'])->name('store');
 Route::get('/products', [ProductsController::class, 'index'])->name('index');
-
 /**
  * Sales's Router
  */
