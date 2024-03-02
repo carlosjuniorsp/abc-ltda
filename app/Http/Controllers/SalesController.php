@@ -81,9 +81,10 @@ class SalesController extends Controller
     {
         try {
             $sale = Sales::select('tb_sales')
-                ->select('tb_sales.price', 'tb_sales.quantity', 'tb_sales.id as sales_id', 'tb_products.name as product_name', 'tb_client.name')
+                ->select('tb_sales.price', 'tb_sales.quantity', 'tb_sales.id as sales_id', 'tb_sales.deleted_at', 'tb_products.name as product_name', 'tb_client.name')
                 ->join('tb_client', 'tb_client.id', '=', 'tb_sales.tb_client_id')
                 ->join('tb_products', 'tb_products.id', '=', 'tb_sales.tb_product_id')
+                ->withTrashed()
                 ->get();
             if (count($sale) <= 0) {
                 return [
@@ -124,10 +125,11 @@ class SalesController extends Controller
 
         try {
             $sale = Sales::select('tb_sales')
-                ->select('tb_sales.price', 'tb_sales.quantity', 'tb_sales.id as sales_id',  'tb_products.name as product_name', 'tb_client.name')
+                ->select('tb_sales.price', 'tb_sales.quantity', 'tb_sales.id as sales_id', 'tb_sales.deleted_at', 'tb_products.name as product_name', 'tb_client.name')
                 ->join('tb_client', 'tb_client.id', '=', 'tb_sales.tb_client_id')
                 ->join('tb_products', 'tb_products.id', '=', 'tb_sales.tb_product_id')
                 ->where('tb_sales.tb_client_id', '=', $tb_client_id)
+                ->withTrashed()
                 ->get();
             if (count($sale) <= 0) {
                 return [
@@ -206,7 +208,7 @@ class SalesController extends Controller
                         'produto' => $sale->product_name,
                         'price' => $sale->price,
                         'quantity' => $sale->quantity,
-                        'status' => is_null($sale->deleted_at) ? 'Pedido Cancelado' : 'Pedido em andamento',
+                        'status' => is_null($sale->deleted_at) ? 'Pedido em andamento' : 'Pedido cancelado',
                         'total' => $sale->price * $sale->quantity
                     ]
                 ]);
