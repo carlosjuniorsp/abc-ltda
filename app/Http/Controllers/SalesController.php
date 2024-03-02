@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUpdateSalesRequest;
 use App\Http\Resources\SalesResource;
 use App\Models\Sales;
-use App\Models\Products;
 use Illuminate\Http\Request;
 
 class SalesController extends Controller
 {
     private $model;
+
     /**
      * Create a new controller instance.
      *
@@ -46,12 +45,12 @@ class SalesController extends Controller
      *          response=201,
      *          description="Register Successfully",
      *          @OA\JsonContent(
-     *              example={           
+     *              example={{           
      *                    "tb_client_id": 1,
      *                    "tb_product_id": 2,
      *                    "price": 8.50,
      *                    "quantity": 10                            
-     *              }
+     *              }}
      *          )
      *       ),
      *      @OA\Response(
@@ -63,10 +62,10 @@ class SalesController extends Controller
     public function store(Request $request)
     {
         try {
-           foreach($request->all() as $data){
-            $sale = Sales::create($data);
-           }
-           
+            foreach ($request->all() as $data) {
+                return $this->validate_sale($data);
+                $sale = Sales::create($data);
+            }
             return new SalesResource($sale);
         } catch (\Exception $e) {
             return [
@@ -105,15 +104,15 @@ class SalesController extends Controller
 
     /**
      * @OA\Get(
-     * path="/sales/{id}",
+     * path="/sales/{client_id}",
      * operationId="sale_show",
      * tags={"Show Sale"},
-     * summary="Show one sale from id",
-     * description="Show one sale from id",
+     * summary="Displaing one sale from id the client",
+     * description="Displaing one sale from id the client",
      *      @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="Sale id",
+     *         description="Client id",
      *         required=true,
      *      ),
      *      @OA\Response(
@@ -124,16 +123,22 @@ class SalesController extends Controller
      *      @OA\Response(response=404, description="Resource Not Found"),
      * )
      */
-    public function showSale($sale_id)
+    public function showSale($tb_client_id)
     {
         try {
-            $sales = $this->model::find($sale_id);
-            if (!$sales) {
+            $sale = Sales::select('tb_sales')
+                ->select('tb_sales.price', 'tb_sales.quantity', 'tb_products.name as product_name', 'tb_client.name')
+                ->join('tb_client', 'tb_client.id', '=', 'tb_sales.tb_client_id')
+                ->join('tb_products', 'tb_products.id', '=', 'tb_sales.tb_product_id')
+                ->where('tb_sales.tb_client_id', '=', $tb_client_id)
+                ->get();
+
+            if (count($sale) <= 0) {
                 return [
-                    'message' => 'Nenhuma venda encontrada com o id ' . $sale_id . ' informado!',
+                    'message' => 'Nenhuma venda encontrada para o cliente informado!',
                 ];
             }
-            return $this->sales_structure($sales);
+            return $this->sales_structure($sale);
         } catch (\Exception $e) {
             return [
                 'message' => $e->getMessage()
@@ -148,20 +153,47 @@ class SalesController extends Controller
      */
     private function sales_structure($sales)
     {
-        $products = new Products();
-        $result = [];
-        foreach ($sales->product_id as $product_id) {
-            $products = $products->find($product_id);
-            $result[] = [
-                'name' => $products->name,
-                'price' => $products->price
+
+        try {
+            $result = [];
+            foreach ($sales as $sale) {
+                array_push($result, [
+                    'client' => $sale->name,
+                    'produto' => $sale->product_name,
+                    'price' => $sale->price,
+                    'quantity' => $sale->quantity,
+                    'total' => $sale->price * $sale->quantity
+                ]);
+            }
+            return $result;
+        } catch (\Exception $e) {
+            return [
+                'message' => $e->getMessage()
             ];
         }
+    }
 
-        return
-            [
-                'sales_id' => $sales->id,
-                'product' => $result
-            ];
+    /**
+     * Validate and display show erros
+     * @param array $data
+     * @return array
+     */
+    private function validate_sale($data)
+    {
+        $msg = "";
+        switch ($data) {
+            case is_null($data['tb_client_id']):
+                $msg = 'O campo client id é obrigatório';
+                break;
+            case is_null($data['tb_product_id']):
+                $msg = 'O campo product id é obrigatório';
+                break;
+            case is_null($data['price']):
+                $msg = 'O campo price é obrigatório';
+                break;
+        }
+        return [
+            'message' => $msg,
+        ];
     }
 }

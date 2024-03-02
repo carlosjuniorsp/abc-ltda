@@ -144,12 +144,14 @@
                         "content": {
                             "application/json": {
                                 "schema": {},
-                                "example": {
-                                    "tb_client_id": 1,
-                                    "tb_product_id": 2,
-                                    "price": 8.5,
-                                    "quantity": 10
-                                }
+                                "example": [
+                                    {
+                                        "tb_client_id": 1,
+                                        "tb_product_id": 2,
+                                        "price": 8.5,
+                                        "quantity": 10
+                                    }
+                                ]
                             }
                         }
                     },
@@ -159,19 +161,19 @@
                 }
             }
         },
-        "/sales/{id}": {
+        "/sales/{client_id}": {
             "get": {
                 "tags": [
                     "Show Sale"
                 ],
-                "summary": "Show one sale from id",
-                "description": "Show one sale from id",
+                "summary": "Displaing one sale from id the client",
+                "description": "Displaing one sale from id the client",
                 "operationId": "sale_show",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Sale id",
+                        "description": "Client id",
                         "required": true
                     }
                 ],
