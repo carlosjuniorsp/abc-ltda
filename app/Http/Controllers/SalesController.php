@@ -6,6 +6,7 @@ use App\Http\Requests\StoreUpdateSalesRequest;
 use App\Http\Resources\SalesResource;
 use App\Models\Sales;
 use App\Models\Products;
+use Illuminate\Http\Request;
 
 class SalesController extends Controller
 {
@@ -59,11 +60,13 @@ class SalesController extends Controller
      *       ),
      * )
      */
-    public function store(StoreUpdateSalesRequest $request)
+    public function store(Request $request)
     {
         try {
-            $data = $request->validated();
+           foreach($request->all() as $data){
             $sale = Sales::create($data);
+           }
+           
             return new SalesResource($sale);
         } catch (\Exception $e) {
             return [
