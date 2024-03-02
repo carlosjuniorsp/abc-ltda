@@ -29,28 +29,19 @@ class SalesController extends Controller
      * description="Register a new sales",
      *     @OA\RequestBody(
      *         @OA\JsonContent(),
-     *         @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"tb_client_id", "tb_product_id","price","quantity"},
-     *               @OA\Property(property="tb_client_id", type="integer"),
-     *               @OA\Property(property="tb_product_id", type="integer"),
-     *               @OA\Property(property="price", type="decimal"),
-     *               @OA\Property(property="quantity", type="integer"),
-     *            ),
-     *        ),
      *    ),
      *      @OA\Response(
      *          response=201,
      *          description="Register Successfully",
      *          @OA\JsonContent(
-     *              example={{           
+     *              example={
+     *                  {           
      *                    "tb_client_id": 1,
      *                    "tb_product_id": 2,
      *                    "price": 8.50,
      *                    "quantity": 10                            
-     *              }}
+     *                  }
+     *              }
      *          )
      *       ),
      *      @OA\Response(
@@ -63,9 +54,10 @@ class SalesController extends Controller
     {
         try {
             foreach ($request->all() as $data) {
-                return $this->validate_sale($data);
+                $this->validate_sale($data);
                 $sale = Sales::create($data);
             }
+
             return new SalesResource($sale);
         } catch (\Exception $e) {
             return [
@@ -88,13 +80,17 @@ class SalesController extends Controller
     public function index()
     {
         try {
-            $sales = $this->model::paginate();
-            if (count($sales) <= 0) {
+            $sale = Sales::select('tb_sales')
+                ->select('tb_sales.price', 'tb_sales.quantity', 'tb_sales.id as sales_id', 'tb_products.name as product_name', 'tb_client.name')
+                ->join('tb_client', 'tb_client.id', '=', 'tb_sales.tb_client_id')
+                ->join('tb_products', 'tb_products.id', '=', 'tb_sales.tb_product_id')
+                ->get();
+            if (count($sale) <= 0) {
                 return [
                     'message' => 'Nenhuma venda foi encontrado!',
                 ];
             }
-            return SalesResource::collection($sales);
+            return $this->sales_structure($sale);
         } catch (\Exception $e) {
             return [
                 'message' => $e->getMessage()
@@ -104,7 +100,7 @@ class SalesController extends Controller
 
     /**
      * @OA\Get(
-     * path="/sales/{client_id}",
+     * path="/sales/{id}",
      * operationId="sale_show",
      * tags={"Show Sale"},
      * summary="Displaing one sale from id the client",
@@ -125,20 +121,62 @@ class SalesController extends Controller
      */
     public function showSale($tb_client_id)
     {
+
         try {
             $sale = Sales::select('tb_sales')
-                ->select('tb_sales.price', 'tb_sales.quantity', 'tb_products.name as product_name', 'tb_client.name')
+                ->select('tb_sales.price', 'tb_sales.quantity', 'tb_sales.id as sales_id',  'tb_products.name as product_name', 'tb_client.name')
                 ->join('tb_client', 'tb_client.id', '=', 'tb_sales.tb_client_id')
                 ->join('tb_products', 'tb_products.id', '=', 'tb_sales.tb_product_id')
                 ->where('tb_sales.tb_client_id', '=', $tb_client_id)
                 ->get();
-
             if (count($sale) <= 0) {
                 return [
                     'message' => 'Nenhuma venda encontrada para o cliente informado!',
                 ];
             }
             return $this->sales_structure($sale);
+        } catch (\Exception $e) {
+            return [
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * @OA\delete(
+     * path="/sales/{id}",
+     * operationId="sale_delete",
+     * tags={"Cancel a sale"},
+     * summary="Cancel a sale",
+     * description="Cancel a sale",
+     *      @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Sale id",
+     *         required=true,
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *       ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
+    public function destroy($id)
+    {
+        try {
+            $sale = Sales::find($id);
+            if (empty($sale)) {
+                return [
+                    'message' => 'Não foi possível cancelar, o pedido (' . $id . ') não existe!',
+                ];
+            }
+            if ($sale->delete()) {
+                return response()->json([
+                    'message' => 'O pedido (' . $id . ') foi deletado com sucesso!',
+                ]);
+            }
         } catch (\Exception $e) {
             return [
                 'message' => $e->getMessage()
@@ -158,11 +196,19 @@ class SalesController extends Controller
             $result = [];
             foreach ($sales as $sale) {
                 array_push($result, [
-                    'client' => $sale->name,
-                    'produto' => $sale->product_name,
-                    'price' => $sale->price,
-                    'quantity' => $sale->quantity,
-                    'total' => $sale->price * $sale->quantity
+                    'sale' => [
+                        'id' => $sale->sales_id
+                    ],
+                    'client' => [
+                        'name' => $sale->name
+                    ],
+                    'product' => [
+                        'produto' => $sale->product_name,
+                        'price' => $sale->price,
+                        'quantity' => $sale->quantity,
+                        'status' => is_null($sale->deleted_at) ? 'Pedido Cancelado' : 'Pedido em andamento',
+                        'total' => $sale->price * $sale->quantity
+                    ]
                 ]);
             }
             return $result;
@@ -191,6 +237,8 @@ class SalesController extends Controller
             case is_null($data['price']):
                 $msg = 'O campo price é obrigatório';
                 break;
+            default:
+                return $data;
         }
         return [
             'message' => $msg,

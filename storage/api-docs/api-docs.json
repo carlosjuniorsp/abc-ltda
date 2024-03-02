@@ -108,31 +108,6 @@
                 "operationId": "new_sales",
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "tb_client_id",
-                                    "tb_product_id",
-                                    "price",
-                                    "quantity"
-                                ],
-                                "properties": {
-                                    "tb_client_id": {
-                                        "type": "integer"
-                                    },
-                                    "tb_product_id": {
-                                        "type": "integer"
-                                    },
-                                    "price": {
-                                        "type": "decimal"
-                                    },
-                                    "quantity": {
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        },
                         "application/json": {
                             "schema": {}
                         }
@@ -161,7 +136,7 @@
                 }
             }
         },
-        "/sales/{client_id}": {
+        "/sales/{id}": {
             "get": {
                 "tags": [
                     "Show Sale"
@@ -174,6 +149,33 @@
                         "name": "id",
                         "in": "path",
                         "description": "Client id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Cancel a sale"
+                ],
+                "summary": "Cancel a sale",
+                "description": "Cancel a sale",
+                "operationId": "sale_delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Sale id",
                         "required": true
                     }
                 ],

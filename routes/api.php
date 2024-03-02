@@ -27,4 +27,5 @@ Route::get('/products', [ProductsController::class, 'index'])->name('index');
  */
 Route::post('/sales', [SalesController::class, 'store'])->name('store');
 Route::get('/sales', [SalesController::class, 'index'])->name('index');
-Route::get('/sales/{client_id}', [SalesController::class, 'showSale'])->name('showSale');
+Route::get('/sales/{id}', [SalesController::class, 'showSale'])->name('showSale');
+Route::delete('/sales/{id}', [SalesController::class, 'destroy'])->name('destroy');
